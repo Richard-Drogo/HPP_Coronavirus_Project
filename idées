@@ -1,0 +1,12 @@
+faire une Classe Chaine avec :
+Le pays : String
+
+|Les id des personnes de la chaines : List<int> :le plus ancien en position 0
+|les dates de contamination de chaques personnes : List<int> le plus ancien en position 0 ( voir règle 6 pour l'ensemble des chaines )
+ou 
+|la combinaison : List<(int,int)>
+
+Le score : int 
+
+Fonctions nécessaires : Copie partielle ( dans les bijonctions de chaines ) 
+Calcul du score : void Score(int date)
