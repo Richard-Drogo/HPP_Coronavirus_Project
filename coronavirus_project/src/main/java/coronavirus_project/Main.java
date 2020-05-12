@@ -1,23 +1,24 @@
 package coronavirus_project;
 
+import java.util.Scanner;
+import java.lang.NumberFormatException;
+
 public class Main {
 
 	public static void main(String[] args) {
-		System.out.println("Starting Point of the program...");
-		final String FRANCE = "France.csv";
-		final String ITALY = "Italy.csv";
-		final String SPAIN = "Spain.csv";
+		System.out.println("Saisissez un entier pour lancer le programme : ");
+		Scanner scanner = new Scanner(System.in);
+		scanner.nextInt();
 		
-		//CSVReader csvreader = new CSVReader(","); // Pour prendre toutes les informations 
-		CSVReader csvreader = new CSVReader(",",new int[] {1,5,6}); // Colonnes 1, 5 et 6.
 		
-		String[] dataline = csvreader.getDataLine(SPAIN,0);
-		
-		for(int i = 0; i < dataline.length; i ++) {
-			System.out.println(dataline[i]);
+		CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator();		
+		boolean donnees_en_attente = true;
+		while(donnees_en_attente) {
+			donnees_en_attente = ctcc.calculate();
+			// Décommenter les deux lignes suivantes pour faire pas à pas.
+			//System.out.println("Saisissez un entier pour lancer le tour suivant : ");
+			//scanner.nextInt();
 		}
-		
-		
     }
 
 }

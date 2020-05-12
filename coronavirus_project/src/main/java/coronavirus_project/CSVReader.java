@@ -3,7 +3,9 @@ package coronavirus_project;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.NoSuchElementException;
 import java.util.stream.Stream;
 
 public class CSVReader {
@@ -23,12 +25,9 @@ public class CSVReader {
 	}
 	
 	
-	public String[] getDataLine(String fichier, int ligne) {		
-
-		File fichier_csv = new File(getClass().getClassLoader().getResource(fichier).getFile());
-		String chemin = fichier_csv.getAbsolutePath();
+	public String[] getDataLine(Path chemin, int ligne) throws NoSuchElementException {		
 		
-		try (Stream<String> lines = Files.lines(Paths.get(chemin))) {
+		try (Stream<String> lines = Files.lines(chemin)) {
 		    String line = lines.skip(ligne).findFirst().get();
 		    String[] all_data = line.split(separateur_);
 		    
