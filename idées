@@ -10,3 +10,26 @@ Le score : int
 
 Fonctions nécessaires : Copie partielle ( dans les bijonctions de chaines ) 
 Calcul du score : void Score(int date)
+
+1er jet :
+
+récupérer les données de la personne concernée dans les listes
+récupérer le pays en même temps ( réduire les recherches ) 
+On cherche une chaine avec une personne qui l'a contaminée.
+  si on ne trouve rien : nouvelle chaine avec la valeur en racine 
+  si on trouve         : comparer les dates 
+    si la durée est > 14 j : nouvelle chaine avec la valeur en racine ( score 0 )
+    sinon                  : 
+      si il est en bout de chaine : on ajoute en queue sur la chaine 
+      sinon : copie de la chaine jusqu'à l'indice concerné, ajouter en queue sur la copie, ajout dans la liste des chaines
+      finsi
+    finsi
+  finsi
+ recalculer les scores de chaques chaines 
+ eliminer les chaines avec un score de 0
+ trier en fonction du score et de la date 
+ ajout dans le fichier des infos sur les 3 premiers
+recommencer boucle
+ 
+ 
+ 
