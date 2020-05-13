@@ -82,6 +82,8 @@ public class CoronavirusTopChainCalculator {
 						break;
 					}
 				}
+				// L'origine de cette contamination est une chaine de score 0 déjà supprimée, on créé une nouvelle chaine du coup.
+				chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
 				
 			} else {
 				chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));

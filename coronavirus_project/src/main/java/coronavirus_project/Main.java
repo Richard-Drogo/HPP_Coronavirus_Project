@@ -1,7 +1,6 @@
 package coronavirus_project;
 
 import java.util.Scanner;
-import java.lang.NumberFormatException;
 
 public class Main {
 
@@ -19,6 +18,10 @@ public class Main {
 			//System.out.println("Saisissez un entier pour lancer le tour suivant : ");
 			//scanner.nextInt();
 		}
+
+		System.out.println("Terminé !");
+		System.out.println("Saisissez un entier pour fermer le programme : ");
+		scanner.nextInt();
     }
 
 }
