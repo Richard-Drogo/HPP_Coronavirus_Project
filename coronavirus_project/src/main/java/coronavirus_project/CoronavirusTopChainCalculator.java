@@ -49,13 +49,17 @@ public class CoronavirusTopChainCalculator {
 
 		if((donnees_lignes_pays[0] != null) || (donnees_lignes_pays[1] != null) || (donnees_lignes_pays[2] != null)) {
 			int index_pays_traite = 0;
+			boolean first = true;
 			for(int i = 0; i < donnees_lignes_pays.length; i++) {
+				//System.out.println(i);
 				if(donnees_lignes_pays[i] != null) {
 					int temps_pays_i = (int)Float.parseFloat(donnees_lignes_pays[i][1]);
-					if( i == 0) {
+					if(first) {
 						temps_ = temps_pays_i;
+						index_pays_traite = i;
+						first = false;
 					}
-					if(temps_pays_i < temps_) {
+					else if(temps_pays_i < temps_) {
 						temps_ = temps_pays_i;
 						index_pays_traite = i;
 					}
@@ -63,7 +67,9 @@ public class CoronavirusTopChainCalculator {
 			}
 			
 			ligne_actuelle_pays[index_pays_traite] = ligne_actuelle_pays[index_pays_traite] + 1;
+			System.out.println(index_pays_traite + " " );
 			int id_personne = Integer.parseInt(donnees_lignes_pays[index_pays_traite][0]);
+			
 			int id_personne_contaminatrice = -1;
 			try {
 				id_personne_contaminatrice = Integer.parseInt(donnees_lignes_pays[index_pays_traite][2].trim());
