@@ -100,7 +100,7 @@ public class CoronavirusTopChainCalculator {
 				} else {
 					int score = chaine_i.getScore();
 					for(int i = 2; i >= 0; i--) {
-						if(classement.get(i).getScore() > score) {
+						if(classement.get(i).getScore() >= score) {
 							switch(i) {
 							// Pour le case 2 on quitte directement.
 							case 1:{
@@ -142,5 +142,4 @@ public class CoronavirusTopChainCalculator {
 			}
 		}
 	}
-
 }
