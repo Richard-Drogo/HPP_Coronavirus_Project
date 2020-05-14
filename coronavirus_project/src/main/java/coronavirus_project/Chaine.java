@@ -8,6 +8,7 @@ public class Chaine {
 	private ArrayList<int []> personnes_;
 	private int index_pays_;
 	private int id_personne_originelle_ = -1;
+	private int id_min = 0;
 	
 	public Chaine() {};
 	public Chaine(int index_pays, int[] personne) {
@@ -23,24 +24,23 @@ public class Chaine {
 	}
 	
 	// Si == false, indique que la chaine doit être supprimée.
-	// TODO : OPTIMISATION LILIAN A FAIRE, indiquer dans un champs de la classe l'indice à partir duquel > 14 jours pour éviter le traitement suplémentaire.
 	public boolean actualiserScore(int temps_actuel) {
 		score_ = 0;
-		
-		Iterator<int []> iterateur = personnes_.iterator();
-		while(iterateur.hasNext()) {
-			int[] personne = iterateur.next();
-			
-			int difference_de_jour = (temps_actuel - personne[1]) / 86400;
 
-			if(difference_de_jour < 14) {
-				if(difference_de_jour < 7) {
-					score_ += 10;
-				} else {
-					score_ += 4;
-				}
-			}
-		}
+        for( int i = id_min; i < personnes_.size(); i++) {
+            int difference_de_jour = (temps_actuel - personnes_.get(i)[1]) / 86400;
+
+            if(difference_de_jour < 14) {
+                if(difference_de_jour < 7) {
+                    score_ += 10;
+                } else {
+                    score_ += 4;
+                }
+            }
+            else {
+                id_min++;
+            }
+        }
 		
 		if(score_ == 0) {
 			return false;
@@ -49,14 +49,13 @@ public class Chaine {
 		}
 	}
 
-	public boolean presenceIdPersonneContaminatrice(int id_personne_contaminatrice) {
-		Iterator<int []> iterateur = personnes_.iterator();
-		while(iterateur.hasNext()) {
-			int[] personne = iterateur.next();
-			if(personne[0] == id_personne_contaminatrice) {
+	public boolean presenceIdPersonneContaminatrice(int id_personne_contaminatrice) {	
+		for (int i = personnes_.size() - 1; i > id_min; i--) {
+			if(personnes_.get(i)[0] == id_personne_contaminatrice) {
 				return true;
 			}
 		}
+		
 		return false;
 	}
 	

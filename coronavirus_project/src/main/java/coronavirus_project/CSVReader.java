@@ -1,7 +1,11 @@
 package coronavirus_project;
 
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -26,7 +30,7 @@ public class CSVReader {
 	
 	
 	public String[] getDataLine(Path chemin, int ligne) throws NoSuchElementException {		
-		
+				
 		try (Stream<String> lines = Files.lines(chemin)) {
 		    String line = lines.skip(ligne).findFirst().get();
 		    String[] all_data = line.split(separateur_);
@@ -44,7 +48,7 @@ public class CSVReader {
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		}
+		}	
 		
 	}
 }
