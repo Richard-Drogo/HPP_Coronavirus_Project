@@ -70,6 +70,7 @@ public class CoronavirusTopChainCalculator {
 		}
 	}
 	
+
 	
 	private String[][] getDataLigne() {
 		String[][] donnees_lignes_pays = new String[3][];

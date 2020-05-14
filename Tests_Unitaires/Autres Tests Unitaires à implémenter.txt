@@ -1,0 +1,1 @@
+Si deux chaines ont le même score, la chaine la plus ancienne doit être affichée en premier.
