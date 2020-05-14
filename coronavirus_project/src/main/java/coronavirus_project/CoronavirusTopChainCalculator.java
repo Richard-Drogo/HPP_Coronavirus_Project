@@ -117,17 +117,22 @@ public class CoronavirusTopChainCalculator {
 		if(id_personne_contaminatrice != -1) {
 			// TODO : Optimisation possible Richard, en profiter pour actualiser les scores ici... Et reprendre plus tard à partir de l'indice de la chaine auquel on s'est arrêté.
 			Iterator<Chaine> iterateur = chaines_.iterator();
+			boolean ajoutee = false;
+			
 			while(iterateur.hasNext()) {
 				Chaine chaine_i = iterateur.next();
 				
 				if(chaine_i.getIndexPays() == index_pays_traite && chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
 					chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
+					ajoutee = true;
 					break;
 				}
 				
 			}
 			// L'origine de cette contamination est une chaine de score 0 déjà supprimée, on créé une nouvelle chaine du coup.
-			chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
+			if(!ajoutee) {
+				chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
+			}
 			
 		} else {
 			chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
