@@ -1,6 +1,9 @@
 package coronavirus_project;
 
+import java.io.BufferedWriter;
 import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -14,9 +17,10 @@ public class CoronavirusTopChainCalculator {
 	private final Path ITALY = new File(getClass().getClassLoader().getResource("Italy.csv").getFile()).toPath();
 	private final Path SPAIN = new File(getClass().getClassLoader().getResource("Spain.csv").getFile()).toPath();
 	
+	private String chemin_fichier_avancement_ = null;
 	private int[] ligne_actuelle_pays = new int[] {0, 0, 0}; // France, Italy, Spain
 	private int temps_ = 0; // Temps écoulé en seconde depuis le 1er Janvier 1970
-
+	private int iteration_ = 0;
 	private LinkedList<Chaine> chaines_ = null;
 	
 	private final CSVReader csvreader_ = new CSVReader(",",new int[] {1,5,6});
@@ -27,8 +31,13 @@ public class CoronavirusTopChainCalculator {
 		chaines_ = new LinkedList<Chaine>();
 	}
 	
+	public CoronavirusTopChainCalculator(String chemin_fichier_avancement) {
+		chaines_ = new LinkedList<Chaine>();
+		chemin_fichier_avancement_ = chemin_fichier_avancement;
+	}
 	
-	public boolean calculate() {
+	
+	public boolean calculate() throws IOException {
 		String[][] donnees_lignes_pays = new String[3][];
 		try {
 			donnees_lignes_pays[0] = csvreader_.getDataLine(FRANCE, ligne_actuelle_pays[0]);
@@ -130,7 +139,9 @@ public class CoronavirusTopChainCalculator {
 				}
 			}
 			
-			afficherClassement(classement);
+			iteration_++;
+			//afficherClassement(classement);
+			ecrireClassement(classement);
 			return true;
 		} else {
 			return false;
@@ -139,13 +150,34 @@ public class CoronavirusTopChainCalculator {
 	
 	private void afficherClassement(ArrayList<Chaine> classement) {
 		if(classement.get(1).getScore() == 0) {
-			System.out.println(classement.get(0).afficher());
+			System.out.println(iteration_ + ": " + classement.get(0).afficher());
 		} else {
 			if(classement.get(2).getScore() == 0) {
-				System.out.println(classement.get(0).afficher() + " " + classement.get(1).afficher());
+				System.out.println(iteration_ + ": " + classement.get(0).afficher() + " " + classement.get(1).afficher());
 			} else {
-				System.out.println(classement.get(0).afficher() + " " + classement.get(1).afficher() + " " + classement.get(2).afficher());
+				System.out.println(iteration_ + ": " + classement.get(0).afficher() + " " + classement.get(1).afficher() + " " + classement.get(2).afficher());
 			}
+		}
+	}
+	
+	private void ecrireClassement(ArrayList<Chaine> classement) throws IOException {
+		if(chemin_fichier_avancement_ != null) {
+			String contenu = "";
+			if(classement.get(1).getScore() == 0) {
+				contenu = iteration_ + ": " + classement.get(0).afficher() + "\n";
+			} else {
+				if(classement.get(2).getScore() == 0) {
+					contenu = iteration_ + ": " + classement.get(0).afficher() + " " + classement.get(1).afficher() + "\n";
+				} else {
+					contenu = iteration_ + ": " + classement.get(0).afficher() + " " + classement.get(1).afficher() + " " + classement.get(2).afficher() + "\n";
+				}
+			}
+		
+	    	FileWriter fw = new FileWriter(new File(chemin_fichier_avancement_),true);
+	    	BufferedWriter bw = new BufferedWriter(fw);
+	    	bw.write(contenu);
+	    	bw.flush();
+	    	bw.close();
 		}
 	}
 }
