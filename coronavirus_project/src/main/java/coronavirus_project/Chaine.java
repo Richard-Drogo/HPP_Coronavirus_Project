@@ -50,12 +50,13 @@ public class Chaine {
 	}
 
 	public boolean presenceIdPersonneContaminatrice(int id_personne_contaminatrice) {	
-		for (int i = personnes_.size() - 1; i >= id_min; i--) {
+		
+		for (int i = id_min; i < personnes_.size(); i++) {
 			if(personnes_.get(i)[0] == id_personne_contaminatrice) {
 				return true;
 			}
 		}
-		
+
 		return false;
 	}
 	

@@ -122,6 +122,7 @@ public class CoronavirusTopChainCalculator {
 			while(iterateur.hasNext()) {
 				Chaine chaine_i = iterateur.next();
 				
+				// Si on ne suppose plus que le virus s'arrête aux frontières des pays, on enlève la première condition.
 				if(chaine_i.getIndexPays() == index_pays_traite && chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
 					chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
 					ajoutee = true;
