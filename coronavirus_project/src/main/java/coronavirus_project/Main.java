@@ -9,9 +9,9 @@ public class Main {
 	// Début : Configuration
 	private final static boolean ECRITURE_FICHIER = false;
 	private final static String CHEMIN_FICHIER_AVANCEMENT = "C:\\Users\\richa\\Documents\\Temporaire\\FISE2\\OPTION1\\HPP\\Projet_Coronavirus\\Avancement.txt"; // NE PAS OUBLIER DE DOUBLER LES SLASHS SUR WINDOWS
-	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("France.csv").getPath();
-	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("Italy.csv").getPath();
-	private final static String SPAIN = ClassLoader.getSystemClassLoader().getResource("Spain.csv").getPath();
+	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("5000/France.csv").getPath();
+	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("5000/Italy.csv").getPath();
+	private final static String SPAIN = ClassLoader.getSystemClassLoader().getResource("5000/Spain.csv").getPath();
 	// Fin : Configuration
 	
 	public static void main(String[] args) {
