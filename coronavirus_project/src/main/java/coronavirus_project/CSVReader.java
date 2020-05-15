@@ -4,6 +4,7 @@ import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.file.Files;
@@ -15,41 +16,43 @@ import java.util.stream.Stream;
 public class CSVReader {
 	private String separateur_;
 	private int colonnes_a_extraire_[]; // La première colonne est la colonne 1.
-	private boolean extraire_toutes_les_informations_ = true;
+	private BufferedReader bf_;
 	
-	
-	public CSVReader(String separateur, int colonnes_a_extraire[]) {
+	public CSVReader(String separateur, int colonnes_a_extraire[], String chemin) throws FileNotFoundException {
 		separateur_ = separateur;
 		colonnes_a_extraire_ = colonnes_a_extraire;
-		extraire_toutes_les_informations_ = false;
+		bf_ = new BufferedReader(new FileReader(chemin));
 	}
 	
-	public CSVReader(String separateur) {
-		separateur_ = separateur;
+	public void liberer() {
+		try {
+			bf_.close();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
-	
-	public String[] getDataLine(Path chemin, int ligne) throws NoSuchElementException {		
-				
-		try (Stream<String> lines = Files.lines(chemin)) {
-		    String line = lines.skip(ligne).findFirst().get();
-		    String[] all_data = line.split(separateur_);
-		    
-		    if(!extraire_toutes_les_informations_) {
+	public String[] getNextLine() {
+	    String line;
+		try {
+			line = bf_.readLine();
+			if(line != null) {
+			    String[] all_data = line.split(separateur_);
+			    
 			    String[] data = new String[colonnes_a_extraire_.length];
 			    for(int i = 0; i < colonnes_a_extraire_.length; i++) {
 			    	data[i] = all_data[colonnes_a_extraire_[i]-1]; // - 1 car on passe de la colonne désirée à l'index d'affectation.
 			    }
 			    return data;
-		    } else {
-		    	return all_data;
-		    }
-		    
+			} else {
+				return null;
+			}
 		} catch (IOException e) {
 			e.printStackTrace();
 			return null;
-		}	
-		
+		}
 	}
+	
 }
 
