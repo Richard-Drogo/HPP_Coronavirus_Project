@@ -7,7 +7,7 @@ import java.util.Scanner;
 public class Main {
 
 	// Début : Configuration
-	private final static boolean ECRITURE_FICHIER = true;
+	private final static boolean ECRITURE_FICHIER = false;
 	private final static String CHEMIN_FICHIER_AVANCEMENT = "C:\\Users\\richa\\Documents\\Temporaire\\FISE2\\OPTION1\\HPP\\Projet_Coronavirus\\Avancement.txt"; // NE PAS OUBLIER DE DOUBLER LES SLASHS SUR WINDOWS
 	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("France.csv").getPath();
 	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("Italy.csv").getPath();

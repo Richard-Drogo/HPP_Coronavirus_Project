@@ -24,6 +24,7 @@ public class CoronavirusTopChainCalculator {
 	private int index_pays_traite_ = -1;
 	private CSVReader[] csvreader_;
 	private ArrayList<Chaine> classement_;
+	private String sortie_ = "";
 	
 	// MÉTHODES PUBLIQUES -----------------------------------------------------------------------------
 	// Début : Constructeurs
@@ -61,7 +62,7 @@ public class CoronavirusTopChainCalculator {
 		return encore;
 	}
 
-	
+	public String getSortie() {return sortie_;};
 	
 	// MÉTHODES PRIVÉES -----------------------------------------------------------------------------------
 	private boolean chaineDeTraitement(){
@@ -193,14 +194,15 @@ public class CoronavirusTopChainCalculator {
 	// Début : Méthodes d'affichage
 	private void afficherClassement() {
 		if(classement_.get(1).getScore() == 0) {
-			System.out.println(iteration_ + ": " + classement_.get(0).afficher());
+			sortie_ = iteration_ + ": " + classement_.get(0).afficher();
 		} else {
 			if(classement_.get(2).getScore() == 0) {
-				System.out.println(iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher());
+				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher();
 			} else {
-				System.out.println(iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher());
+				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher();
 			}
 		}
+		System.out.println(sortie_);
 	}
 	
 	private void ecrireClassement() throws IOException {
