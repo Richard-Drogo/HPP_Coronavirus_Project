@@ -57,9 +57,13 @@ public class CoronavirusTopChainCalculator {
 				//e.printStackTrace();
 			}
 			
-			actionNouveauCas(index_pays_traite, id_personne, id_personne_contaminatrice);
+			ArrayList<Chaine> classement = new ArrayList<Chaine>(Arrays.asList(new Chaine[] {new Chaine(), new Chaine(), new Chaine()}));
+			
+			Iterator<Chaine> iterateur_chaines_ = actionNouveauCas(index_pays_traite, id_personne, id_personne_contaminatrice, classement);
 
-			ArrayList<Chaine> classement = actualiserScoresChaines();
+			if(iterateur_chaines_ != null) {
+				actualiserScoresChainesRestantes(iterateur_chaines_, classement);
+			}
 			
 			iteration_++;
 			afficherClassement(classement);
@@ -113,71 +117,77 @@ public class CoronavirusTopChainCalculator {
 		return index_pays_traite;
 	}
 	
-	private void actionNouveauCas(int index_pays_traite, int id_personne, int id_personne_contaminatrice) {
+	private Iterator<Chaine> actionNouveauCas(int index_pays_traite, int id_personne, int id_personne_contaminatrice, ArrayList<Chaine> classement) {
 		if(id_personne_contaminatrice != -1) {
-			// TODO : Optimisation possible Richard, en profiter pour actualiser les scores ici... Et reprendre plus tard à partir de l'indice de la chaine auquel on s'est arrêté.
-			Iterator<Chaine> iterateur = chaines_.iterator();
-			boolean ajoutee = false;
+			Iterator<Chaine> iterateur_chaines = chaines_.iterator();
 			
-			while(iterateur.hasNext()) {
-				Chaine chaine_i = iterateur.next();
+			while(iterateur_chaines.hasNext()) {
+				Chaine chaine_i = iterateur_chaines.next();
 				
 				// Si on ne suppose plus que le virus s'arrête aux frontières des pays, on enlève la première condition.
 				if(chaine_i.getIndexPays() == index_pays_traite && chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
 					chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
-					ajoutee = true;
-					break;
+					changerClassement(chaine_i, classement);
+					return iterateur_chaines;
 				}
 				
+				if(!chaine_i.actualiserScore(temps_)) {
+					iterateur_chaines.remove();
+				} else {
+					changerClassement(chaine_i, classement);
+				}
 			}
 			// L'origine de cette contamination est une chaine de score 0 déjà supprimée, on créé une nouvelle chaine du coup.
-			if(!ajoutee) {
-				chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
-			}
-			
+			chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
+			changerClassement(chaines_.get(chaines_.size() - 1), classement);
+			return null;
 		} else {
 			chaines_.add(new Chaine(index_pays_traite, new int[] {id_personne, temps_}));
+			return chaines_.iterator();
 		}
 	}
 	
 	// Retourne le classement.
-	private ArrayList<Chaine> actualiserScoresChaines(){
-		ArrayList<Chaine> classement = new ArrayList<Chaine>(Arrays.asList(new Chaine[] {new Chaine(), new Chaine(), new Chaine()}));
-		Iterator<Chaine> iterateur_maj_scores = chaines_.iterator();
-		while(iterateur_maj_scores.hasNext()) {
+	private void actualiserScoresChainesRestantes(Iterator<Chaine> iterateur_chaines, ArrayList<Chaine> classement){
 
-			Chaine chaine_i = iterateur_maj_scores.next();
+		while(iterateur_chaines.hasNext()) {
+
+			Chaine chaine_i = iterateur_chaines.next();
 			if(!chaine_i.actualiserScore(temps_)) {
-				iterateur_maj_scores.remove();
+				iterateur_chaines.remove();
 
 			} else {
-				int score = chaine_i.getScore();
-				for(int i = 2; i >= 0; i--) {
-					if(classement.get(i).getScore() >= score) {
-						switch(i) {
-						// Pour le case 2 on quitte directement.
-						case 1:{
-							classement.set(2, chaine_i); 
-						}break;
-						
-						case 0:{
-							classement.set(2, classement.get(1)); 
-							classement.set(1, chaine_i); 
-						}break;
-						}
-						break; // Pour quitter la boucle
-					} else {
-						if(i == 0) {
-							classement.set(2, classement.get(1)); 
-							classement.set(1, classement.get(0)); 
-							classement.set(0, chaine_i);
-						}
-					}
+				changerClassement(chaine_i, classement);
+			}
+		}
+	}
+	
+	private void changerClassement(Chaine chaine_i, ArrayList<Chaine> classement) {
+		int score = chaine_i.getScore();
+		for(int i = 2; i >= 0; i--) {
+			if(classement.get(i).getScore() >= score) {
+				switch(i) {
+				// Pour le case 2 on quitte directement. 
+				case 1:{
+					classement.set(2, chaine_i); 
+				}break;
+				
+				case 0:{
+					classement.set(2, classement.get(1)); 
+					classement.set(1, chaine_i); 
+				}break;
+				}
+				break; // ICI ON QUITTE LA BOUCLE : LE CLASSMENT RESTE INCHANGE car i == 2
+			} else {
+				if(i == 0) {
+					classement.set(2, classement.get(1)); 
+					classement.set(1, classement.get(0)); 
+					classement.set(0, chaine_i);
 				}
 			}
 		}
-		return classement;
 	}
+	
 	
 	private void afficherClassement(ArrayList<Chaine> classement) {
 		if(classement.get(1).getScore() == 0) {
