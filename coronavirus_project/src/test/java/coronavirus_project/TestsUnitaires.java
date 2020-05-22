@@ -12,6 +12,14 @@ public class TestsUnitaires {
 	private final static String ITALY_20 = ClassLoader.getSystemClassLoader().getResource("20/Italy.csv").getPath();
 	private final static String SPAIN_20 = ClassLoader.getSystemClassLoader().getResource("20/Spain.csv").getPath();
 	
+	private final static String FRANCE_T1 = ClassLoader.getSystemClassLoader().getResource("test1/France.csv").getPath();
+	private final static String ITALY_T1 = ClassLoader.getSystemClassLoader().getResource("test1/Italy.csv").getPath();
+	private final static String SPAIN_T1 = ClassLoader.getSystemClassLoader().getResource("test1/Spain.csv").getPath();
+	
+	private final static String FRANCE_T2 = ClassLoader.getSystemClassLoader().getResource("test2/France.csv").getPath();
+	private final static String ITALY_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Italy.csv").getPath();
+	private final static String SPAIN_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Spain.csv").getPath();
+
 	@Test
 	public void DataSet20() {
 		String[] attendues = new String[20];
@@ -40,6 +48,69 @@ public class TestsUnitaires {
 		
 		try {
 			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_20, ITALY_20, SPAIN_20});
+			boolean donnees_en_attente = true;
+			int i = 0;
+			while(donnees_en_attente) {
+				donnees_en_attente = ctcc.calculate();
+				if(donnees_en_attente) {
+					obtenues[i] = ctcc.getSortie();
+					i++;
+				}
+			}
+			assertArrayEquals(attendues, obtenues);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail("Vérifier le chemin des fichiers csv...");
+		}
+	}
+	
+	@Test
+	public void DataSetBranch() {
+		String[] attendues = new String[6];
+		String[] obtenues = new String[6];
+		
+		attendues[0] = "1: Italy, 0, 10;";
+		attendues[1] = "2: Italy, 0, 10; Spain, 1, 10;";
+		attendues[2] = "3: France, 2, 10;";
+		attendues[3] = "4: France, 2, 20;";
+		attendues[4] = "5: France, 2, 24;";
+		attendues[5] = "6: France, 2, 18;";
+		
+		try {
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T1, ITALY_T1, SPAIN_T1});
+			boolean donnees_en_attente = true;
+			int i = 0;
+			while(donnees_en_attente) {
+				donnees_en_attente = ctcc.calculate();
+				if(donnees_en_attente) {
+					obtenues[i] = ctcc.getSortie();
+					i++;
+				}
+			}
+			assertArrayEquals(attendues, obtenues);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail("Vérifier le chemin des fichiers csv...");
+		}
+	}
+	
+	@Test
+	public void DataSetBranches() {
+		String[] attendues = new String[9];
+		String[] obtenues = new String[9];
+		
+		attendues[0] = "1: Spain, 0, 10;";
+		attendues[1] = "2: Italy, 1, 10;";
+		attendues[2] = "3: Italy, 1, 10; France, 2, 10;";
+		attendues[3] = "4: Italy, 1, 20; France, 2, 10;";
+		attendues[4] = "5: France, 2, 20; Italy, 1, 14;";
+		attendues[5] = "6: Italy, 1, 24; France, 2, 20;";
+		attendues[6] = "6: Italy, 1, 24; France, 2, 24;";
+		attendues[7] = "6: Italy, 1, 18; France, 2, 18;";
+		attendues[8] = "6: Italy, 1, 18; France, 2, 18;";
+		
+		try {
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T2, ITALY_T2, SPAIN_T2});
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
