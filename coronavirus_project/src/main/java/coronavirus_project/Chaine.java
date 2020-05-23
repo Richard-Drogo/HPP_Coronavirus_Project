@@ -10,25 +10,25 @@ public class Chaine {
 	private int id_min = 0;
 	
 	public Chaine() {};
-	public Chaine(int index_pays, int[] personne) {
-		index_pays_ = index_pays;
-		score_ = 10;
+	public Chaine(int index_pays, int[] personne) { 
+		index_pays_ = index_pays; // Permet de chercher dans les liste du bon pays.
+		score_ = 10; // Dans une nouvelle chaine, on est à temps minimal, il lui faut un score de 0
 		personnes_ = new ArrayList<int[]>();
-		personnes_.add(personne);
+		personnes_.add(personne); // on ajoute la personne qui initie la chaine
 		id_personne_originelle_ = personne[0];
 	}
 	
-	public void ajouterPersonne(int[] personne) {
-		personnes_.add(personne);
+	public void ajouterPersonne(int[] personne) { // ajout d'une personne dans la chaine
+		personnes_.add(personne); 
 	}
 	
 	// Si == false, indique que la chaine doit être supprimée.
 	public boolean actualiserScore(int temps_actuel) {
-		score_ = 0;
+		score_ = 0; // recalcul de la chaine, initialisation
 
-        for( int i = id_min; i < personnes_.size(); i++) {
+        for( int i = id_min; i < personnes_.size(); i++) { // on boucle sur les elements ayant un score supérieur à 0 à l'itération précedente
             int difference_de_jour = (temps_actuel - personnes_.get(i)[1]) / 86400;
-
+            // calcul de la différence de temps
             if(difference_de_jour < 14) {
                 if(difference_de_jour < 7) {
                     score_ += 10;
@@ -36,12 +36,12 @@ public class Chaine {
                     score_ += 4;
                 }
             }
-            else {
+            else { // on déplace l'id minimal 
                 id_min++;
             }
         }
 		
-		if(score_ == 0) {
+		if(score_ == 0) { // après le calcul, si le score est 0, on renvoie false
 			return false;
 		} else {
 			return true;
@@ -49,6 +49,9 @@ public class Chaine {
 	}
 
 	public boolean presenceIdPersonneContaminatrice(int id_personne_contaminatrice) {	
+		
+		// recherche de la personne dans la chaine
+		// si la personne recherchée est contaminée depuis plus de 14 jours, on renvoie false ( pas lue )
 		
 		for (int i = id_min; i < personnes_.size(); i++) {
 			if(personnes_.get(i)[0] == id_personne_contaminatrice) {

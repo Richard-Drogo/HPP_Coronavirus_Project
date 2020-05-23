@@ -39,7 +39,7 @@ public class TestsUnitaires {
 		attendues[2] = "3: Spain, 2, 10;";
 		attendues[3] = "4: Spain, 3, 10;";
 		attendues[4] = "5: France, 4, 10; Spain, 3, 4;";
-		attendues[5] = "6: France, 5, 10; France, 4, 4;";
+		attendues[5] = "6: France, 5, 10; France, 4, 4;"; 
 		attendues[6] = "7: Italy, 6, 10; France, 5, 4;";
 		attendues[7] = "8: Spain, 7, 10; Italy, 6, 4;";
 		attendues[8] = "9: Spain, 7, 10; Spain, 8, 10;";

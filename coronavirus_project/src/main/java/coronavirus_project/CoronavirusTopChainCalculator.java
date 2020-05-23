@@ -63,6 +63,7 @@ public class CoronavirusTopChainCalculator {
 		return encore;
 	}
 
+	
 	public String getSortie() {return sortie_;};
 	
 	// MÉTHODES PRIVÉES -----------------------------------------------------------------------------------
