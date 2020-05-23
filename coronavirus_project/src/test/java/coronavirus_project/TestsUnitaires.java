@@ -20,6 +20,10 @@ public class TestsUnitaires {
 	private final static String ITALY_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Italy.csv").getPath();
 	private final static String SPAIN_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Spain.csv").getPath();
 
+	private final static String FRANCE_T3 = ClassLoader.getSystemClassLoader().getResource("test3/France.csv").getPath();
+	private final static String ITALY_T3 = ClassLoader.getSystemClassLoader().getResource("test3/Italy.csv").getPath();
+	private final static String SPAIN_T3 = ClassLoader.getSystemClassLoader().getResource("test3/Spain.csv").getPath();
+
 	private final static String FRANCE_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/France.csv").getPath();
 	private final static String ITALY_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/Italy.csv").getPath();
 	private final static String SPAIN_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/Spain.csv").getPath();
@@ -168,6 +172,37 @@ public class TestsUnitaires {
 		}
 		
 		System.out.println("Fin du test : DATASET_PROFESSEUR");
+	}
+	
+	@Test
+	public void DataSetOldBranch() {
+		String[] attendues = new String[7];
+		String[] obtenues = new String[7];
+		
+		attendues[0] = "1: Italy, 0, 10;";
+		attendues[1] = "2: Italy, 0, 10; Spain, 1, 10;";
+		attendues[2] = "3: France, 2, 10;";
+		attendues[3] = "4: France, 2, 20;";
+		attendues[4] = "5: France, 2, 24;";
+		attendues[5] = "6: France, 2, 18;";
+		attendues[6] = "7: France, 2, 14; France, 6, 10;";
+		
+		try {
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T3, ITALY_T3, SPAIN_T3}, false);
+			boolean donnees_en_attente = true;
+			int i = 0;
+			while(donnees_en_attente) {
+				donnees_en_attente = ctcc.calculate();
+				if(donnees_en_attente) {
+					obtenues[i] = ctcc.getSortie();
+					i++;
+				}
+			}
+			assertArrayEquals(attendues, obtenues);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail("Vérifier le chemin des fichiers csv...");
+		}
 	}
 
 }
