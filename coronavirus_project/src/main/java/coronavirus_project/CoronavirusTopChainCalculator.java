@@ -5,12 +5,10 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
-import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.LinkedList;
-import java.util.NoSuchElementException;
 
 public class CoronavirusTopChainCalculator {
 	
@@ -25,10 +23,12 @@ public class CoronavirusTopChainCalculator {
 	private CSVReader[] csvreader_;
 	private ArrayList<Chaine> classement_;
 	private String sortie_ = "";
+	boolean contamination_inter_pays_ = false;
 	
 	// MÉTHODES PUBLIQUES -----------------------------------------------------------------------------
 	// Début : Constructeurs
-	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays) throws FileNotFoundException {
+	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, boolean contamination_inter_pays) throws FileNotFoundException {
+		contamination_inter_pays_ = contamination_inter_pays;
 		chaines_ = new LinkedList<Chaine>();
 		csvreader_ = new CSVReader[] {new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[0]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[1]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[2])};
 		for (int i = 0; i < donnees_lignes_pays_.length; i++) {
@@ -36,7 +36,8 @@ public class CoronavirusTopChainCalculator {
 		}
 	}
 	
-	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, String chemin_fichier_avancement) throws FileNotFoundException {
+	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, String chemin_fichier_avancement, boolean contamination_inter_pays) throws FileNotFoundException {
+		contamination_inter_pays_ = contamination_inter_pays;
 		chaines_ = new LinkedList<Chaine>();
 		csvreader_ = new CSVReader[] {new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[0]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[1]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[2])};
 		chemin_fichier_avancement_ = chemin_fichier_avancement;
@@ -126,12 +127,29 @@ public class CoronavirusTopChainCalculator {
 			
 			while(iterateur_chaines.hasNext()) {
 				Chaine chaine_i = iterateur_chaines.next();
+				chaine_i.actualiserPersonnesContaminees(temps_);
 				
+				if(!contamination_inter_pays_) {
 				// Si on ne suppose plus que le virus s'arrête aux frontières des pays, on enlève la première condition.
-				if(chaine_i.getIndexPays() == index_pays_traite_ && chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
-					chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
-					changerClassement(chaine_i, classement_);
-					return iterateur_chaines;
+					if(chaine_i.getIndexPays() == index_pays_traite_ && chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
+						chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
+						if(!chaine_i.actualiserScore(temps_)) {
+							iterateur_chaines.remove();
+						} else {
+							changerClassement(chaine_i, classement_);
+						}
+						return iterateur_chaines;
+					}
+				} else {
+					if(chaine_i.presenceIdPersonneContaminatrice(id_personne_contaminatrice)) {
+						chaine_i.ajouterPersonne(new int[] {id_personne, temps_});
+						if(!chaine_i.actualiserScore(temps_)) {
+							iterateur_chaines.remove();
+						} else {
+							changerClassement(chaine_i, classement_);
+						}
+						return iterateur_chaines;
+					}
 				}
 				
 				if(!chaine_i.actualiserScore(temps_)) {

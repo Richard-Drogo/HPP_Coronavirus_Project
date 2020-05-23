@@ -20,7 +20,7 @@ public class Main {
 
 		if (!ECRITURE_FICHIER) {
 			try {
-				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN});
+				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, false);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(-1);
@@ -28,7 +28,7 @@ public class Main {
 			}
 		} else {
 			try {
-				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, CHEMIN_FICHIER_AVANCEMENT);
+				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, CHEMIN_FICHIER_AVANCEMENT, false);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(-1);

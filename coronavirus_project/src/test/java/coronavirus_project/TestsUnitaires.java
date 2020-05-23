@@ -20,6 +20,11 @@ public class TestsUnitaires {
 	private final static String ITALY_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Italy.csv").getPath();
 	private final static String SPAIN_T2 = ClassLoader.getSystemClassLoader().getResource("test2/Spain.csv").getPath();
 
+	private final static String FRANCE_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/France.csv").getPath();
+	private final static String ITALY_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/Italy.csv").getPath();
+	private final static String SPAIN_PROFESSEUR = ClassLoader.getSystemClassLoader().getResource("Exemple_Professeur/Spain.csv").getPath();
+	
+	
 	@Test
 	public void DataSet20() {
 		String[] attendues = new String[20];
@@ -46,8 +51,10 @@ public class TestsUnitaires {
 		attendues[18] = "19: Spain, 16, 10; Italy, 17, 10; Italy, 18, 10;";
 		attendues[19] = "20: Italy, 17, 10; Italy, 18, 10; France, 19, 10;";
 		
+		System.out.println("Début du test : DATASET_20");
+		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_20, ITALY_20, SPAIN_20});
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_20, ITALY_20, SPAIN_20}, false);
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
@@ -62,6 +69,8 @@ public class TestsUnitaires {
 			e.printStackTrace();
 			fail("Vérifier le chemin des fichiers csv...");
 		}
+		
+		System.out.println("Fin du test : DATASET_20");
 	}
 	
 	@Test
@@ -77,7 +86,7 @@ public class TestsUnitaires {
 		attendues[5] = "6: France, 2, 18;";
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T1, ITALY_T1, SPAIN_T1});
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T1, ITALY_T1, SPAIN_T1}, false);
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
@@ -105,12 +114,12 @@ public class TestsUnitaires {
 		attendues[3] = "4: Italy, 1, 20; France, 2, 10;";
 		attendues[4] = "5: France, 2, 20; Italy, 1, 14;";
 		attendues[5] = "6: Italy, 1, 24; France, 2, 20;";
-		attendues[6] = "6: Italy, 1, 24; France, 2, 24;";
-		attendues[7] = "6: Italy, 1, 18; France, 2, 18;";
-		attendues[8] = "6: Italy, 1, 18; France, 2, 18;";
+		attendues[6] = "7: Italy, 1, 24; France, 2, 24;";
+		attendues[7] = "8: Italy, 1, 18; France, 2, 18;";
+		attendues[8] = "9: Italy, 1, 18; France, 2, 18;";
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T2, ITALY_T2, SPAIN_T2});
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T2, ITALY_T2, SPAIN_T2}, false);
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
@@ -125,6 +134,40 @@ public class TestsUnitaires {
 			e.printStackTrace();
 			fail("Vérifier le chemin des fichiers csv...");
 		}
+	}
+	
+	@Test
+	public void DataSetProfesseur() {
+		String[] attendues = new String[6];
+		String[] obtenues = new String[6];
+		
+		attendues[0] = "1: France, 0, 10;";
+		attendues[1] = "2: France, 0, 20;";
+		attendues[2] = "3: France, 0, 20; France, 2, 10;";
+		attendues[3] = "4: Italy, 3, 10; France, 0, 8; France, 2, 4;";
+		attendues[4] = "5: Spain, 4, 10;";
+		attendues[5] = "6: Spain, 4, 10; Italy, 5, 10;";
+
+		System.out.println("Début du test : DATASET_PROFESSEUR");
+		
+		try {
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_PROFESSEUR, ITALY_PROFESSEUR, SPAIN_PROFESSEUR}, true);
+			boolean donnees_en_attente = true;
+			int i = 0;
+			while(donnees_en_attente) {
+				donnees_en_attente = ctcc.calculate();
+				if(donnees_en_attente) {
+					obtenues[i] = ctcc.getSortie();
+					i++;
+				}
+			}
+			assertArrayEquals(attendues, obtenues);
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+			fail("Vérifier le chemin des fichiers csv...");
+		}
+		
+		System.out.println("Fin du test : DATASET_PROFESSEUR");
 	}
 
 }

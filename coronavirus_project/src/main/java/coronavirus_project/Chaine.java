@@ -1,7 +1,6 @@
 package coronavirus_project;
 
 import java.util.ArrayList;
-import java.util.Iterator;
 
 public class Chaine {
 	private int score_ = 0;
@@ -51,14 +50,7 @@ public class Chaine {
 
 	public boolean presenceIdPersonneContaminatrice(int id_personne_contaminatrice) {	
 		
-		/*
 		for (int i = id_min; i < personnes_.size(); i++) {
-			if(personnes_.get(i)[0] == id_personne_contaminatrice) {
-				return true;
-			}
-		}*/
-		
-		for (int i = 0; i < personnes_.size(); i++) {
 			if(personnes_.get(i)[0] == id_personne_contaminatrice) {
 				return true;
 			}
@@ -66,6 +58,23 @@ public class Chaine {
 
 		return false;
 	}
+	
+	// Permet avant d'affecter une nouvelle personne à une chaine d'actualiser l'indice minimum si avec le nouveau temps son score passe à 0.
+	// Nécessaire pour passer le DATASET_PROFESSEUR.
+	public void actualiserPersonnesContaminees(int temps_actuel) {
+        for( int i = id_min; i < personnes_.size(); i++) {
+            int difference_de_jour = (temps_actuel - personnes_.get(i)[1]) / 86400;
+
+            if(difference_de_jour < 14) {
+        		return;
+            }
+            else {
+                id_min++;
+            }
+        }
+        return;
+	}
+	
 	
 	public String afficher() {
 		String pays = "";
