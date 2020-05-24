@@ -13,20 +13,32 @@ import java.util.LinkedList;
 public class CoronavirusTopChainCalculator {
 	
 	// ATTRIBUTS ---------------------------------------------------------------------------
+	// Début : COMMUNS
 	private String chemin_fichier_avancement_ = null;
+	private boolean multithreading_ = false;
+	// Fin : COMMUNS
+	// Début : MONOTHREAD
+	private CSVReader[] csvreader_;
 	private int[] ligne_actuelle_pays = new int[] {0, 0, 0}; // France, Italy, Spain
 	private int temps_ = 0; // Temps écoulé en seconde depuis le 1er Janvier 1970
-	private int iteration_ = 0;
-	private LinkedList<Chaine> chaines_ = null;
 	private String[][] donnees_lignes_pays_ = new String[3][];
 	private int index_pays_traite_ = -1;
-	private CSVReader[] csvreader_;
+	private boolean contamination_inter_pays_ = false;
+	private LinkedList<Chaine> chaines_ = null;
 	private ArrayList<Chaine> classement_;
+	private int iteration_ = 0;
 	private String sortie_ = "";
-	boolean contamination_inter_pays_ = false;
+	// Fin : MONOTHREAD
+	// Début : MULTITHREAD
+	private ThreadCSVReader thread_lecture_;
+	private ThreadActualiser thread_actualiser_;
+	// Fin : MULTITHREAD
 	
-	// MÉTHODES PUBLIQUES -----------------------------------------------------------------------------
+	
+	
+	// MÉTHODES -----------------------------------------------------------------------------
 	// Début : Constructeurs
+	// Constructeur MonoThreading Affichage
 	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, boolean contamination_inter_pays) throws FileNotFoundException {
 		contamination_inter_pays_ = contamination_inter_pays;
 		chaines_ = new LinkedList<Chaine>();
@@ -36,6 +48,7 @@ public class CoronavirusTopChainCalculator {
 		}
 	}
 	
+	// Constructeur MonoThreading Ecriture
 	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, String chemin_fichier_avancement, boolean contamination_inter_pays) throws FileNotFoundException {
 		contamination_inter_pays_ = contamination_inter_pays;
 		chaines_ = new LinkedList<Chaine>();
@@ -45,18 +58,75 @@ public class CoronavirusTopChainCalculator {
 			donnees_lignes_pays_[i] = csvreader_[i].getNextLine(); 
 		}
 	}
+	
+	// Constructeur MultiThreading Affichage
+	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, boolean contamination_inter_pays, boolean multithreading) throws FileNotFoundException {
+		multithreading_ = multithreading;
+		contamination_inter_pays_ = contamination_inter_pays;
+		if(multithreading_) {
+			thread_lecture_ = new ThreadCSVReader(chemins_fichiers_csv_pays);
+			thread_actualiser_ = new ThreadActualiser(contamination_inter_pays, thread_lecture_);
+		} else {
+			chaines_ = new LinkedList<Chaine>();
+			csvreader_ = new CSVReader[] {new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[0]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[1]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[2])};
+			for (int i = 0; i < donnees_lignes_pays_.length; i++) {
+				donnees_lignes_pays_[i] = csvreader_[i].getNextLine(); 
+			}
+		}
+	}
+	
+	// Constructeur MultiThreading Ecriture
+	public CoronavirusTopChainCalculator(String[] chemins_fichiers_csv_pays, String chemin_fichier_avancement, boolean contamination_inter_pays, boolean multithreading) throws FileNotFoundException {
+		multithreading_ = multithreading;
+		contamination_inter_pays_ = contamination_inter_pays;
+		chemin_fichier_avancement_ = chemin_fichier_avancement;
+		if(multithreading_) {
+			thread_lecture_ = new ThreadCSVReader(chemins_fichiers_csv_pays);
+			thread_actualiser_ = new ThreadActualiser(contamination_inter_pays, thread_lecture_);
+		} else {
+			chaines_ = new LinkedList<Chaine>();
+			csvreader_ = new CSVReader[] {new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[0]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[1]), new CSVReader(",",new int[] {1,5,6}, chemins_fichiers_csv_pays[2])};
+			chemin_fichier_avancement_ = chemin_fichier_avancement;
+			for (int i = 0; i < donnees_lignes_pays_.length; i++) {
+				donnees_lignes_pays_[i] = csvreader_[i].getNextLine(); 
+			}
+		}
+	}
 	// Fin : Constructeurs
 	
+	
+	// DÉBUT : MÉTHODES MONOTHREADING
+	// MÉTHODES PUBLIQUES -----------------------------------------------------------------------------------
 	public boolean calculate() {
-		boolean encore = chaineDeTraitement();
+		boolean encore;
+		if(multithreading_) {
+			sortie_ = thread_actualiser_.getSortie();
+			if(sortie_ != "") {
+				encore = true;
+			} else {
+				encore = false;
+			}
+		} else {
+			encore = chaineDeTraitement();
+		}
 		if(encore) {
-			afficherClassement();
+			System.out.println(sortie_);
 		}
 		return encore;
 	}
 	
 	public boolean calculateFichier() throws IOException {
-		boolean encore = chaineDeTraitement();
+		boolean encore;
+		if(multithreading_) {
+			sortie_ = thread_actualiser_.getSortie();
+			if(sortie_ != "") {
+				encore = true;
+			} else {
+				encore = false;
+			}
+		} else {
+			encore = chaineDeTraitement();
+		}
 		if(encore) {
 			ecrireClassement();
 		}
@@ -74,7 +144,7 @@ public class CoronavirusTopChainCalculator {
 
 		if((donnees_lignes_pays_[0] != null) || (donnees_lignes_pays_[1] != null) || (donnees_lignes_pays_[2] != null)) {
 			modifierIndexPaysTraite();
-
+			
 			ligne_actuelle_pays[index_pays_traite_] = ligne_actuelle_pays[index_pays_traite_] + 1;
 			
 			int id_personne = Integer.parseInt(donnees_lignes_pays_[index_pays_traite_][0]);
@@ -90,12 +160,22 @@ public class CoronavirusTopChainCalculator {
 			classement_ = new ArrayList<Chaine>(Arrays.asList(new Chaine[] {new Chaine(), new Chaine(), new Chaine()}));
 			
 			Iterator<Chaine> iterateur_chaines_ = actionNouveauCas(id_personne, id_personne_contaminatrice);
-
+			
 			if(iterateur_chaines_ != null) {
 				actualiserScoresChainesRestantes(iterateur_chaines_);
 			}
 			
 			iteration_++;
+			
+			if(classement_.get(1).getScore() == 0) {
+				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + "\n";
+			} else {
+				if(classement_.get(2).getScore() == 0) {
+					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + "\n";
+				} else {
+					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher() + "\n";
+				}
+			}
 			return true;
 		} else {
 			return false;
@@ -210,38 +290,22 @@ public class CoronavirusTopChainCalculator {
 
 	
 	// Début : Méthodes d'affichage
-	private void afficherClassement() {
-		if(classement_.get(1).getScore() == 0) {
-			sortie_ = iteration_ + ": " + classement_.get(0).afficher();
-		} else {
-			if(classement_.get(2).getScore() == 0) {
-				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher();
-			} else {
-				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher();
-			}
-		}
-		System.out.println(sortie_);
-	}
-	
 	private void ecrireClassement() throws IOException {
-		if(chemin_fichier_avancement_ != null) {
-			String contenu = "";
-			if(classement_.get(1).getScore() == 0) {
-				contenu = iteration_ + ": " + classement_.get(0).afficher() + "\n";
-			} else {
-				if(classement_.get(2).getScore() == 0) {
-					contenu = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + "\n";
-				} else {
-					contenu = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher() + "\n";
-				}
-			}
-		
-	    	FileWriter fw = new FileWriter(new File(chemin_fichier_avancement_),true);
-	    	BufferedWriter bw = new BufferedWriter(fw);
-	    	bw.write(contenu);
-	    	bw.flush();
-	    	bw.close();
-		}
+    	FileWriter fw = new FileWriter(new File(chemin_fichier_avancement_),true);
+    	BufferedWriter bw = new BufferedWriter(fw);
+    	bw.write(sortie_);
+    	bw.flush();
+    	bw.close();
 	}
 	// Fin : Méthodes d'affichage
+	// FIN : MÉTHODES MONOTHREADING
+
+
+	
+	// DÉBUT : MÉTHODES MULTITHREADING
+	public void demarrerLesThreads() {
+		thread_lecture_.start();
+		thread_actualiser_.start();
+	}
+	
 }

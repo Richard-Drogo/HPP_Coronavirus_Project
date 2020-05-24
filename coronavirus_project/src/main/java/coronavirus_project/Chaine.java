@@ -25,10 +25,8 @@ public class Chaine {
 	// Si == false, indique que la chaine doit être supprimée.
 	public boolean actualiserScore(int temps_actuel) {
 		score_ = 0;
-
         for( int i = id_min; i < personnes_.size(); i++) {
             int difference_de_jour = (temps_actuel - personnes_.get(i)[1]) / 86400;
-
             if(difference_de_jour < 14) {
                 if(difference_de_jour < 7) {
                     score_ += 10;
