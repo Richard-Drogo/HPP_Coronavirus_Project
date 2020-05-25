@@ -8,6 +8,9 @@ import org.junit.Test;
 
 public class TestsUnitaires {
 
+	private final static boolean MULTITHREADING = true;
+	private final static boolean CONTAMINATION_INTER_PAYS = false; // N'est pas utilisé pour le test du professeur.
+	
 	private final static String FRANCE_20 = ClassLoader.getSystemClassLoader().getResource("20/France.csv").getPath();
 	private final static String ITALY_20 = ClassLoader.getSystemClassLoader().getResource("20/Italy.csv").getPath();
 	private final static String SPAIN_20 = ClassLoader.getSystemClassLoader().getResource("20/Spain.csv").getPath();
@@ -58,13 +61,18 @@ public class TestsUnitaires {
 		System.out.println("Début du test : DATASET_20");
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_20, ITALY_20, SPAIN_20}, false);
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_20, ITALY_20, SPAIN_20}, CONTAMINATION_INTER_PAYS, MULTITHREADING);
+			
+			if(MULTITHREADING) {
+				ctcc.demarrerLesThreads();
+			}
+			
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
 				donnees_en_attente = ctcc.calculate();
 				if(donnees_en_attente) {
-					obtenues[i] = ctcc.getSortie();
+					obtenues[i] = ctcc.getSortie().trim();
 					i++;
 				}
 			}
@@ -90,13 +98,18 @@ public class TestsUnitaires {
 		attendues[5] = "6: France, 2, 18;";
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T1, ITALY_T1, SPAIN_T1}, false);
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T1, ITALY_T1, SPAIN_T1}, CONTAMINATION_INTER_PAYS, MULTITHREADING);
+			
+			if(MULTITHREADING) {
+				ctcc.demarrerLesThreads();
+			}
+			
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
 				donnees_en_attente = ctcc.calculate();
 				if(donnees_en_attente) {
-					obtenues[i] = ctcc.getSortie();
+					obtenues[i] = ctcc.getSortie().trim();
 					i++;
 				}
 			}
@@ -123,13 +136,18 @@ public class TestsUnitaires {
 		attendues[8] = "9: Italy, 1, 18; France, 2, 18;";
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T2, ITALY_T2, SPAIN_T2}, false);
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T2, ITALY_T2, SPAIN_T2}, CONTAMINATION_INTER_PAYS, MULTITHREADING);
+			
+			if(MULTITHREADING) {
+				ctcc.demarrerLesThreads();
+			}
+			
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
 				donnees_en_attente = ctcc.calculate();
 				if(donnees_en_attente) {
-					obtenues[i] = ctcc.getSortie();
+					obtenues[i] = ctcc.getSortie().trim();
 					i++;
 				}
 			}
@@ -155,13 +173,18 @@ public class TestsUnitaires {
 		System.out.println("Début du test : DATASET_PROFESSEUR");
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_PROFESSEUR, ITALY_PROFESSEUR, SPAIN_PROFESSEUR}, true);
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_PROFESSEUR, ITALY_PROFESSEUR, SPAIN_PROFESSEUR}, true, MULTITHREADING);
+			
+			if(MULTITHREADING) {
+				ctcc.demarrerLesThreads();
+			}
+			
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
 				donnees_en_attente = ctcc.calculate();
 				if(donnees_en_attente) {
-					obtenues[i] = ctcc.getSortie();
+					obtenues[i] = ctcc.getSortie().trim();
 					i++;
 				}
 			}

@@ -6,12 +6,14 @@ import java.util.Scanner;
 
 public class Main {
 
-	// Début : Configuration
-	private final static boolean ECRITURE_FICHIER = false;
+	// DÃ©but : Configuration
+	private final static boolean ECRITURE_FICHIER = true;
+	private final static boolean CONTAMINATION_INTER_PAYS = false;
+	private final static boolean MULTITHREADING = false;
 	private final static String CHEMIN_FICHIER_AVANCEMENT = "C:\\Users\\richa\\Documents\\Temporaire\\FISE2\\OPTION1\\HPP\\Projet_Coronavirus\\Avancement.txt"; // NE PAS OUBLIER DE DOUBLER LES SLASHS SUR WINDOWS
-	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("5000/France.csv").getPath();
-	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("5000/Italy.csv").getPath();
-	private final static String SPAIN = ClassLoader.getSystemClassLoader().getResource("5000/Spain.csv").getPath();
+	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("1000000/France.csv").getPath();
+	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("1000000/Italy.csv").getPath();
+	private final static String SPAIN = ClassLoader.getSystemClassLoader().getResource("1000000/Spain.csv").getPath();
 	// Fin : Configuration
 	
 	public static void main(String[] args) {
@@ -20,7 +22,7 @@ public class Main {
 
 		if (!ECRITURE_FICHIER) {
 			try {
-				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, false);
+				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, CONTAMINATION_INTER_PAYS, MULTITHREADING);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(-1);
@@ -28,7 +30,7 @@ public class Main {
 			}
 		} else {
 			try {
-				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, CHEMIN_FICHIER_AVANCEMENT, false);
+				ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE, ITALY, SPAIN}, CHEMIN_FICHIER_AVANCEMENT, CONTAMINATION_INTER_PAYS, MULTITHREADING);
 			} catch (FileNotFoundException e) {
 				e.printStackTrace();
 				System.exit(-1);
@@ -41,6 +43,10 @@ public class Main {
 		scanner = new Scanner(System.in);
 		scanner.nextInt();
 		scanner.close();
+		
+		if(MULTITHREADING) {
+			ctcc.demarrerLesThreads();
+		}
 		
 		boolean donnees_en_attente = true;
 		if(!ECRITURE_FICHIER) {
