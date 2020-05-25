@@ -6,10 +6,10 @@ import java.util.Scanner;
 
 public class Main {
 
-	// Début : Configuration
-	private final static boolean ECRITURE_FICHIER = false;
+	// DÃ©but : Configuration
+	private final static boolean ECRITURE_FICHIER = true;
 	private final static boolean CONTAMINATION_INTER_PAYS = false;
-	private final static boolean MULTITHREADING = true;
+	private final static boolean MULTITHREADING = false;
 	private final static String CHEMIN_FICHIER_AVANCEMENT = "C:\\Users\\richa\\Documents\\Temporaire\\FISE2\\OPTION1\\HPP\\Projet_Coronavirus\\Avancement.txt"; // NE PAS OUBLIER DE DOUBLER LES SLASHS SUR WINDOWS
 	private final static String FRANCE = ClassLoader.getSystemClassLoader().getResource("1000000/France.csv").getPath();
 	private final static String ITALY = ClassLoader.getSystemClassLoader().getResource("1000000/Italy.csv").getPath();

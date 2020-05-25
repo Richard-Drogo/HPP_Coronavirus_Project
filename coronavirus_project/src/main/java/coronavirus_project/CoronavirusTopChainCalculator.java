@@ -168,12 +168,12 @@ public class CoronavirusTopChainCalculator {
 			iteration_++;
 			
 			if(classement_.get(1).getScore() == 0) {
-				sortie_ = iteration_ + ": " + classement_.get(0).afficher() + "\n";
+				sortie_ = iteration_ + ": " + classement_.get(0).afficher();
 			} else {
 				if(classement_.get(2).getScore() == 0) {
-					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + "\n";
+					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher();
 				} else {
-					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher() + "\n";
+					sortie_ = iteration_ + ": " + classement_.get(0).afficher() + " " + classement_.get(1).afficher() + " " + classement_.get(2).afficher();
 				}
 			}
 			return true;
@@ -294,6 +294,7 @@ public class CoronavirusTopChainCalculator {
     	FileWriter fw = new FileWriter(new File(chemin_fichier_avancement_),true);
     	BufferedWriter bw = new BufferedWriter(fw);
     	bw.write(sortie_);
+    	bw.newLine();
     	bw.flush();
     	bw.close();
 	}
