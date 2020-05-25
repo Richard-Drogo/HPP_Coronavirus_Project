@@ -211,7 +211,12 @@ public class TestsUnitaires {
 		attendues[6] = "7: France, 2, 14; France, 6, 10;";
 		
 		try {
-			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T3, ITALY_T3, SPAIN_T3}, false);
+			CoronavirusTopChainCalculator ctcc = new CoronavirusTopChainCalculator(new String[] {FRANCE_T3, ITALY_T3, SPAIN_T3}, CONTAMINATION_INTER_PAYS, MULTITHREADING);
+			
+			if(MULTITHREADING) {
+				ctcc.demarrerLesThreads();
+			}
+			
 			boolean donnees_en_attente = true;
 			int i = 0;
 			while(donnees_en_attente) {
